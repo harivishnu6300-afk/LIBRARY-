@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        /* CSS: Styles the layout and status colours */
+        body { font-family: 'Segoe UI', sans-serif; background: #f3f0f5; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 700px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #555555; }
+        .status-available { color: #28a745; font-weight: bold; }
+        .status-issued { color: #359fdc; font-weight: bold; }
+        .controls { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .input-group { display: flex; gap: 10px; margin-top: 10px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        button { padding: 12px 20px; background: #e81a24; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #15b03c; }
+        #message { margin-top: 15px; font-weight: 500; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Library System</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="bookList"></tbody>
+        </table>
+
+        <div class="controls">
+            <h3>Issue or Return Book</h3>
+            <div class="input-group">
+                <input type="number" id="bookIdInput" placeholder="Enter Book ID (e.g. 101)">
+                <button onclick="handleAction('issue')">Issue</button>
+                <button onclick="handleAction('return')" style="background: #6c757d;">Return</button>
+            </div>
+            <p id="message"></p>
+        </div>
+    </div>
+
+    <script>
+        /* JavaScript: Handles the data logic (replaces your Java code) */
+        let books = [
+            { id: 101, title: "Java Basics", author: "John Doe", isIssued: false },
+            { id: 102, title: "Data Science", author: "Jane Smith", isIssued: false },
+            { id: 103, title: "Web Design", author: "Alex Brown", isIssued: false }
+        ];
+
+        function displayBooks() {
+            const list = document.getElementById('bookList');
+            list.innerHTML = ""; 
+            books.forEach(book => {
+                const row = `<tr>
+                    <td>${book.id}</td>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td class="${book.isIssued ? 'status-issued' : 'status-available'}">
+                        ${book.isIssued ? "Issued" : "Available"}
+                    </td>
+                </tr>`;
+                list.innerHTML += row;
+            });
+        }
+
+        function handleAction(type) {
+            const idInput = document.getElementById('bookIdInput');
+            const id = parseInt(idInput.value);
+            const book = books.find(b => b.id === id);
+            
+            if (!book) {
+                showMessage("❌ Error: Book ID not found.", "red");
+                return;
+            }
+
+            if (type === 'issue') {
+                if (book.isIssued) showMessage("⚠️ Already issued.", "orange");
+                else { book.isIssued = true; showMessage("✅ Book issued!", "green"); }
+            } else if (type === 'return') {
+                if (!book.isIssued) showMessage("ℹ️ Already in library.", "blue");
+                else { book.isIssued = false; showMessage("✅ Book returned!", "green"); }
+            }
+            displayBooks();
+            idInput.value = ""; 
+        }
+
+        function showMessage(text, color) {
+            const msg = document.getElementById('message');
+            msg.innerText = text;
+            msg.style.color = color;
+        }
+
+        displayBooks(); // Load table on start
+    </script>
+</body>
+</html>
